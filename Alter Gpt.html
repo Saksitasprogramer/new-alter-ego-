@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ALTER EGO.EXE</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+  font-family:'Space Grotesk',sans-serif;
+  background:black;
+  color:white;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top left,#ff4db833,transparent 30%),
+    radial-gradient(circle at bottom right,#ff9ee733,transparent 30%);
+  pointer-events:none;
+}
+
+.card{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.answer:hover{
+  transform:translateY(-4px);
+  border-color:#ff6ec7;
+  background:rgba(255,105,180,.08);
+}
+
+.glow{
+  box-shadow:
+  0 0 15px rgba(255,105,180,.4),
+  0 0 30px rgba(255,105,180,.2);
+}
+
+</style>
+
+</head>
+
+<body class="min-h-screen">
+
+<!-- HERO -->
+
+<section
+id="hero"
+class="min-h-screen flex flex-col items-center justify-center text-center px-6"
+>
+
+<img
+src="alter-ego-logo.png"
+class="w-[650px] max-w-full mb-10"
+/>
+
+<p class="text-zinc-300 text-xl mb-10 leading-relaxed">
+ค้นหา ALTER EGO ที่ซ่อนอยู่ในตัวคุณ<br>
+ตอบคำถาม 10 ข้อ แล้วค้นพบตัวตนอีกด้านแบบสนุกๆ 😈
+</p>
+
+<button
+onclick="startQuiz()"
+class="glow border border-pink-400 px-10 py-5 rounded-2xl text-2xl font-bold hover:scale-105 transition"
+>
+START QUIZ →
+</button>
+
+</section>
+
+<!-- QUIZ -->
+
+<section
+id="quizSection"
+class="hidden max-w-6xl mx-auto px-6 py-20"
+>
+
+<div class="card rounded-[40px] p-10 glow">
+
+<div class="flex justify-between mb-6">
+
+<div id="questionCount" class="text-zinc-400 uppercase tracking-[3px]">
+Question 1 / 10
+</div>
+
+<div id="progressText" class="text-pink-300">
+10%
+</div>
+
+</div>
+
+<div class="w-full h-3 rounded-full bg-white/10 overflow-hidden mb-12">
+
+<div
+id="progressBar"
+class="h-full bg-gradient-to-r from-pink-400 to-pink-200 transition-all duration-300"
+style="width:10%"
+></div>
+
+</div>
+
+<h2
+id="question"
+class="text-4xl md:text-6xl font-bold text-center text-pink-300 mb-14"
+>
+คำถาม
+</h2>
+
+<div
+id="answers"
+class="grid md:grid-cols-2 gap-6"
+></div>
+
+</div>
+
+</section>
+
+<!-- RESULT -->
+
+<section
+id="resultSection"
+class="hidden max-w-5xl mx-auto px-6 py-20"
+>
+
+<div class="card rounded-[40px] p-10 glow text-center">
+
+<p class="uppercase tracking-[5px] text-pink-300 mb-6">
+YOUR ALTER EGO IS...
+</p>
+
+<h2
+id="resultTitle"
+class="text-5xl md:text-7xl font-black mb-10"
+>
+THE CHAOTIC MUSE
+</h2>
+
+<p
+id="resultDesc"
+class="text-zinc-300 text-xl leading-relaxed max-w-2xl mx-auto mb-10"
+>
+description
+</p>
+
+<div
+id="resultQuote"
+class="border border-pink-400 rounded-3xl p-8 italic text-2xl max-w-2xl mx-auto"
+>
+quote
+</div>
+
+<button
+onclick="location.reload()"
+class="mt-10 border border-pink-400 px-8 py-4 rounded-2xl hover:bg-pink-500/10 transition"
+>
+PLAY AGAIN ↺
+</button>
+
+</div>
+
+</section>
+
+<script>
+
+const questions = [
+
+{
+  question:"เวลา 03:17 น. คุณกำลัง...",
+  answers:[
+    "วางแผนเปลี่ยนชีวิตใหม่ทั้งหมด",
+    "ดูคลิปคอนเสิร์ตวน",
+    "ส่องคนเก่า",
+    "หาอะไรกิน"
+  ]
+},
+
+{
+  question:"ถ้าโดน ghost คุณจะ...",
+  answers:[
+    "ทำเป็นไม่รู้สึกอะไร",
+    "ลงเพลงเศร้าในสตอรี่",
+    "เปลี่ยน personality ใหม่",
+    "หาอะไรกินแทน"
+  ]
+},
+
+{
+  question:"ชุดไปเซเว่นของคุณคือ...",
+  answers:[
+    "ฮู้ดดำทั้งตัว",
+    "แต่งเต็มเหมือนไป runway",
+    "เสื้อบอล + กางเกงนอน",
+    "หยิบอะไรได้ใส่อันนั้น"
+  ]
+},
+
+{
+  question:"ถ้าโลกจะแตกในอีก 10 นาที...",
+  answers:[
+    "ไลฟ์สด",
+    "โทรหาแฟนเก่า",
+    "ถ่ายรูป aesthetic",
+    "กลับไปนอน"
+  ]
+},
+
+{
+  question:"สิ่งที่คุณพูดบ่อยที่สุด",
+  answers:[
+    "ช่างมัน",
+    "เดี๋ยวค่อยคิด",
+    "มัน aesthetic นะ",
+    "ขอเงินหน่อย"
+  ]
+},
+
+{
+  question:"เวลาเศร้าคุณจะ...",
+  answers:[
+    "ฟังเพลงเศร้า",
+    "หายไปจากโลกออนไลน์",
+    "โพสต์อะไรแปลก ๆ",
+    "กิน"
+  ]
+},
+
+{
+  question:"Weekend ในฝัน",
+  answers:[
+    "ออกไปใช้ชีวิต",
+    "นอนทั้งวัน",
+    "ทำคอนเทนต์",
+    "หาเรื่องปั่นเพื่อน"
+  ]
+},
+
+{
+  question:"พลังงานชีวิตของคุณคือ...",
+  answers:[
+    "Chaotic",
+    "Mysterious",
+    "Delusional",
+    "Emotionally unstable"
+  ]
+},
+
+{
+  question:"คุณใช้อะไรเยียวยาตัวเอง",
+  answers:[
+    "shopping",
+    "music",
+    "sleep",
+    "memes"
+  ]
+},
+
+{
+  question:"ถ้ามีคนบอกว่าคุณแปลก...",
+  answers:[
+    "ขอบคุณ",
+    "รู้แล้ว",
+    "ร้องไห้",
+    "ภูมิใจ"
+  ]
+}
+
+];
+
+const results = [
+
+{
+title:"THE CHAOTIC MUSE",
+desc:"คุณคือคนที่มีพลังงานจัดจ้าน กล้าแสดงออก และเป็น main character ตลอดเวลา",
+quote:"You don’t need therapy. You need a stage."
+},
+
+{
+title:"THE INTERNET GREMLIN",
+desc:"คุณออนไลน์ตลอดเวลา ชอบ chaos และ sleep schedule พังไปแล้ว",
+quote:"Your screen time should be illegal."
+},
+
+{
+title:"THE MYSTERIOUS VILLAIN",
+desc:"คุณเงียบ นิ่ง แต่ทุกคนรู้ว่าคุณมีอะไรซ่อนอยู่แน่นอน",
+quote:"Your silence scares people."
+},
+
+{
+title:"THE DELUSIONAL ICON",
+desc:"คุณมี main character syndrome สูงมาก และโลกหมุนรอบ aesthetic ของคุณ",
+quote:"Reality is optional for you."
+}
+
+];
+
+let currentQuestion = 0;
+
+function startQuiz(){
+
+document.getElementById('hero').classList.add('hidden');
+
+document.getElementById('quizSection').classList.remove('hidden');
+
+showQuestion();
+
+}
+
+function showQuestion(){
+
+const q = questions[currentQuestion];
+
+document.getElementById('question').innerText = q.question;
+
+document.getElementById('questionCount').innerText =
+`Question ${currentQuestion + 1} / ${questions.length}`;
+
+const progress =
+((currentQuestion + 1) / questions.length) * 100;
+
+document.getElementById('progressText').innerText =
+Math.round(progress) + '%';
+
+document.getElementById('progressBar').style.width =
+progress + '%';
+
+const answersContainer =
+document.getElementById('answers');
+
+answersContainer.innerHTML = '';
+
+q.answers.forEach(answer => {
+
+const button = document.createElement('button');
+
+button.className =
+'answer card rounded-[30px] p-8 text-left transition';
+
+button.innerHTML = `
+<div class="text-2xl font-bold">
+${answer}
+</div>
+`;
+
+button.onclick = nextQuestion;
+
+answersContainer.appendChild(button);
+
+});
+
+}
+
+function nextQuestion(){
+
+currentQuestion++;
+
+if(currentQuestion < questions.length){
+
+showQuestion();
+
+}else{
+
+showResult();
+
+}
+
+}
+
+function showResult(){
+
+document.getElementById('quizSection')
+.classList.add('hidden');
+
+document.getElementById('resultSection')
+.classList.remove('hidden');
+
+const randomResult =
+results[Math.floor(Math.random() * results.length)];
+
+document.getElementById('resultTitle').innerText =
+randomResult.title;
+
+document.getElementById('resultDesc').innerText =
+randomResult.desc;
+
+document.getElementById('resultQuote').innerText =
+randomResult.quote;
+
+}
+
+</script>
+
+</body>
+</html>
